@@ -6,7 +6,10 @@ workflows:
   version: 2
   test:
     jobs:
-      - ci-go/build
+      - ci-go/build:
+          pre-steps:
+            - run:
+                command: sudo apt-get install gcc g++
       - ci-go/lint
       - ci-go/test
       - ci-go/test:
