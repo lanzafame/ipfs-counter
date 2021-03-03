@@ -19,7 +19,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: autopilot-ipfs-counter    # TODO: update to cluster name
   GKE_LOCATION: us-central1   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
+  DEPLOYMENT_NAME: ipfs-counter # TODO: update to deployment name
   IMAGE: lanzafame-ipfs-counter
 
 jobs:
