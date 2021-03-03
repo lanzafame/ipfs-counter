@@ -133,7 +133,7 @@ func (r *Recorder) getMultiAddrs(ctx context.Context, dataset, table string, whe
 	var row TrialSchema
 	err = iter.Next(&row)
 	if err == iterator.Done {
-		r.log.Warnf("No rows matched query: %s", q.Q)
+		r.log.Warnw("No rows matched query", "query", q.Q)
 		return []string{}, nil
 	}
 	if err != nil {
@@ -143,7 +143,7 @@ func (r *Recorder) getMultiAddrs(ctx context.Context, dataset, table string, whe
 	out := make([]string, 0, iter.TotalRows)
 	ma, err := row.MAString()
 	if err != nil {
-		r.log.Debugf("Failed to re-generate address for peer: %v", err)
+		r.log.Debugw("Failed to re-generate address for peer", "error", err)
 	} else {
 		out = append(out, ma)
 	}
@@ -158,7 +158,7 @@ func (r *Recorder) getMultiAddrs(ctx context.Context, dataset, table string, whe
 		}
 		ma, err = row.MAString()
 		if err != nil {
-			r.log.Debugf("Failed to re-generate address for peer: %v", err)
+			r.log.Debugw("Failed to re-generate address for peer", "error", err)
 		} else {
 			out = append(out, ma)
 		}
@@ -185,7 +185,7 @@ func (r *Recorder) insert(ctx context.Context, dataset, nodeTable, trialTable st
 				continue
 			}
 			if err := nodeInserter.Put(ctx, n); err != nil {
-				r.log.Warnf("Failed to upload %v: %v", n, err)
+				r.log.Warnw("Failed to upload", "node", n, "error", err)
 			}
 		case t, ok := <-r.trialStream:
 			if !ok {
@@ -193,7 +193,7 @@ func (r *Recorder) insert(ctx context.Context, dataset, nodeTable, trialTable st
 				continue
 			}
 			if err := trialInserter.Put(ctx, t); err != nil {
-				r.log.Warnf("Failed to upload trial %v: %v", t, err)
+				r.log.Warnw("Failed to upload trial", "trial", t, "error", err)
 			}
 		case <-done:
 			close(r.nodeStream)
@@ -218,12 +218,12 @@ func (r *Recorder) Finish() error {
 			return true
 		})
 		r.trialStream <- trials
-		r.log.Info("Total trials: ", i)
+		r.log.Infow("Total trials", "num", i)
 	}
-	r.log.Info("Closing context...")
+	r.log.Infow("Closing context...")
 	time.Sleep(time.Second)
 	r.cancel()
-	r.log.Info("Waiting for all queries to finish...")
+	r.log.Infow("Waiting for all queries to finish...")
 	r.wg.Wait()
 	if r.Client != nil {
 		return r.Client.Close()

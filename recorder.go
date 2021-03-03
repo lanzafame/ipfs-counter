@@ -9,7 +9,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
-	logging "github.com/ipfs/go-log"
+	logging "github.com/ipfs/go-log/v2"
 	"github.com/libp2p/go-libp2p-core/control"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -29,7 +29,7 @@ type Recorder struct {
 	dials   sync.Map //map Multiaddr->Trial
 	host    host.Host
 	pinger  *ping.PingService
-	log     logging.StandardLogger
+	log     *logging.ZapEventLogger
 	ctx     context.Context
 	cancel  context.CancelFunc
 
@@ -248,7 +248,7 @@ func (r *Recorder) onPeerSuccess(p peer.ID, rtPeers []*peer.AddrInfo) {
 		r.nodeStream <- n
 	}
 
-	r.log.Debugf("%s crawl successful", p)
+	r.log.Debugw("crawl successful", "peer_id", p)
 }
 
 func (r *Recorder) onPeerFailure(p peer.ID, err error) {
@@ -263,5 +263,5 @@ func (r *Recorder) onPeerFailure(p peer.ID, err error) {
 		r.nodeStream <- n
 	}
 
-	r.log.Debugf("%s crawl failed", p)
+	r.log.Debugw("crawl failed", "peer_id", p)
 }

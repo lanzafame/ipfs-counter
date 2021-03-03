@@ -16,4 +16,8 @@ spec:
             env:
             - name: GOOGLE_APPLICATION_PROJECT_ID
               value: "resnetlab-p2p-observatory"
+            - name: GOLOG_LOG_FMT
+              value: "json"
+            - name: GOLOG_LOG_LABELS
+              value: "app,ipfs-counter"
           restartPolicy: Never

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	logging "github.com/ipfs/go-log"
+	logging "github.com/ipfs/go-log/v2"
 	"github.com/urfave/cli/v2"
 
 	"github.com/libp2p/go-libp2p"
@@ -127,6 +127,7 @@ func crawl(c *cli.Context) error {
 	if c.Bool("debug") {
 		ll = "debug"
 	}
+
 	logger := logging.Logger("dht-crawler")
 	if err := logging.SetLogLevel("dht-crawler", ll); err != nil {
 		return err
@@ -151,7 +152,7 @@ func crawl(c *cli.Context) error {
 		if !ok {
 			return err
 		} else if err != nil {
-			logger.Warnf("Some multiaddrs could not be parsed: %v", err)
+			logger.Warnw("Some multiaddrs could not be parsed", "error", err)
 		}
 	} else if c.IsSet("seed-table") {
 		logger.Info("Loading seed nodes from table...")
@@ -159,29 +160,29 @@ func crawl(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		logger.Infof("Loaded %d seeds", len(addrs))
+		logger.Infow("Loaded seeds", "num", len(addrs))
 		ok, err := pending.AddStrings(addrs)
 		if !ok {
 			return err
 		} else if err != nil {
-			logger.Warnf("Some multiaddrs could not be parsed: %v", err)
+			logger.Warnw("Some multiaddrs could not be parsed", "error", err)
 		}
 	}
 
 	for _, ma := range bootstrapAddrs {
 		if err := pending.Add(ma); err != nil {
-			logger.Warnf("Unable to parse address %s: %w", ma, err)
+			logger.Warnw("Unable to parse address", "addr", ma, "error", err)
 			continue
 		}
 	}
-	logger.Infof("Seeding crawl with %d peer addresses", len(pending))
+	logger.Infow("Seeding crawl with peer addresses", "num", len(pending))
 
 	// populate host info
 	peers := make([]*peer.AddrInfo, 0, len(pending))
 	for _, p := range pending {
 		pis, err := peer.AddrInfosFromP2pAddrs(p.Addrs...)
 		if err != nil {
-			logger.Warnf("Failed to parse addresses for %s: %w", p.ID, err)
+			logger.Warnw("Failed to parse addresses for", "peer_id", p.ID, "error", err)
 			continue
 		}
 		for _, pi := range pis {
@@ -213,6 +214,6 @@ func crawl(c *cli.Context) error {
 		r.onPeerSuccess,
 		r.onPeerFailure)
 
-	logger.Info("Crawl complete. Collecting Output...")
+	logger.Infow("Crawl complete. Collecting Output...")
 	return Output(c.String("output"), r)
 }

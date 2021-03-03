@@ -5,7 +5,7 @@ go 1.14
 require (
 	cloud.google.com/go v0.75.0
 	cloud.google.com/go/bigquery v1.15.0
-	github.com/ipfs/go-log v1.0.4
+	github.com/ipfs/go-log/v2 v2.1.2
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-core v0.8.0
 	github.com/libp2p/go-libp2p-kad-dht v0.11.2-0.20210118203502-9e9f654b0d7a
