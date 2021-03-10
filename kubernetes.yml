@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: ipfs-counter
 spec:
-  schedule: "0 1 * * *"
+  schedule: "*/20 * * * *"
   jobTemplate:
     spec:
       template:
