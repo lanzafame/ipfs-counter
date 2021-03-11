@@ -19,7 +19,7 @@ spec:
             - name: GOLOG_LOG_FMT
               value: "json"
             - name: GOLOG_LOG_LABELS
-              value: "app,ipfs-counter"
+              value: "app=ipfs-counter"
           restartPolicy: Never
           serviceAccount: k8s-autopilot-svc-acct
           serviceAccountName: k8s-autopilot-svc-acct
