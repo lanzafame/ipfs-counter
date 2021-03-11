@@ -6,3 +6,7 @@ commonLabels:
 
 resources:
 - kubernetes.yml
+images:
+- name: gcr.io/PROJECT_ID/IMAGE:TAG
+  newName: gcr.io/blah/hello
+  newTag: "1"
